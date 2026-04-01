@@ -136,7 +136,7 @@
             " FPS | Min: " +
             min.toFixed(1) +
             " | Max: " +
-            max.toFixed(1),
+            max.toFixed(1)
         );
       } else {
         updateStatus("Done! No FPS samples collected.");
