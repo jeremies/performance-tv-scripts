@@ -6,16 +6,23 @@
   var TOTAL_CYCLES = 2;
   var NAV_DELAY_MS = 300;
   // Number of times to press down/up per cycle. Can be overridden via window.BENCHMARK_PRESSES
-  var PRESSES_PER_CYCLE = window.BENCHMARK_PRESSES || 10;
+  var PRESSES_PER_CYCLE = window.BENCHMARK_PRESSES || 40;
+
+  simulateKeyDown("ArrowRight");
 
   function simulateKeyDown(key) {
-    var keyCode = key === "ArrowDown" ? 40 : 38;
+    var keyCode = 0;
+    if (key === "ArrowDown") keyCode = 40;
+    else if (key === "ArrowUp") keyCode = 38;
+    else if (key === "ArrowRight") keyCode = 39;
+    else if (key === "ArrowLeft") keyCode = 37;
+
     var target = document.activeElement || document.body;
 
     var downEvent = document.createEvent("Event");
     downEvent.initEvent("keydown", true, true);
     downEvent.key = key;
-    downEvent.code = key === "ArrowDown" ? "ArrowDown" : "ArrowUp";
+    downEvent.code = key;
     downEvent.keyCode = keyCode;
     downEvent.which = keyCode;
     target.dispatchEvent(downEvent);
@@ -25,7 +32,7 @@
       var upEvent = document.createEvent("Event");
       upEvent.initEvent("keyup", true, true);
       upEvent.key = key;
-      upEvent.code = key === "ArrowDown" ? "ArrowDown" : "ArrowUp";
+      upEvent.code = key;
       upEvent.keyCode = keyCode;
       upEvent.which = keyCode;
       target.dispatchEvent(upEvent);
