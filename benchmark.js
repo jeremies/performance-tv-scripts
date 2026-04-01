@@ -70,7 +70,8 @@
       var now = performance.now();
       frames++;
       if (now >= startTime + 1000) {
-        if (tracking && frames > 5) {
+        // TODO ignore really low fps which occur during page load or transitions. frames > 5?
+        if (tracking) {
           // ignore < 5 fps stutters just like original benchmark
           fpsValues.push((frames * 1000) / (now - startTime));
         }
