@@ -61,6 +61,7 @@
 
     // Custom FPS Tracking
     var fpsValues = [];
+    var fpsDeltas = [];
     var msValues = [];
     var tracking = false;
     var frames = 0;
@@ -79,7 +80,9 @@
         // TODO ignore really low fps which occur during page load or transitions. frames > 5?
         if (tracking) {
           // ignore < 5 fps stutters just like original benchmark
-          fpsValues.push((frames * 1000) / (now - startTime));
+          var duration = now - startTime;
+          fpsValues.push((frames * 1000) / duration);
+          fpsDeltas.push(duration / 1000);
         }
         frames = 0;
         startTime = now;
@@ -135,16 +138,20 @@
       tracking = false;
       if (fpsValues.length > 0) {
         var sumFps = 0;
+        var integralFps = 0;
         for (var i = 0; i < fpsValues.length; i++) {
           sumFps += fpsValues[i];
+          integralFps += fpsValues[i] * fpsDeltas[i]; // value * dt
         }
         var avgFps = sumFps / fpsValues.length;
         var minFps = Math.min.apply(null, fpsValues);
         var maxFps = Math.max.apply(null, fpsValues);
 
         var sumMs = 0;
+        var integralMs = 0;
         for (var j = 0; j < msValues.length; j++) {
           sumMs += msValues[j];
+          integralMs += msValues[j] * msValues[j]; // value * dt (since dt is msValues[j])
         }
         var avgMs = msValues.length > 0 ? sumMs / msValues.length : 0;
         var minMs = msValues.length > 0 ? Math.min.apply(null, msValues) : 0;
@@ -158,13 +165,17 @@
             minFps.toFixed(1) +
             " | Max: " +
             maxFps.toFixed(1) +
+            " | Int: " +
+            integralFps.toFixed(1) +
             "\n" +
             "MS  - Avg: " +
             avgMs.toFixed(1) +
             " | Min: " +
             minMs.toFixed(1) +
             " | Max: " +
-            maxMs.toFixed(1)
+            maxMs.toFixed(1) +
+            " | Int: " +
+            integralMs.toFixed(1)
         );
       } else {
         updateStatus("Done! No samples collected.");
