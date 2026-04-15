@@ -1,7 +1,4 @@
 (function () {
-  if (window.__benchmarkRunning) return;
-  window.__benchmarkRunning = true;
-
   // Configuration
   var TOTAL_CYCLES = 2;
   // Delay between key presses. Can be overridden via window.BENCHMARK_DELAY
