@@ -1,6 +1,6 @@
 (function () {
   // Configuration
-  var TOTAL_CYCLES = 2;
+  var TOTAL_CYCLES = window.BENCHMARK_CYCLES || 4;
   // Delay between key presses. Can be overridden via window.BENCHMARK_DELAY
   var NAV_DELAY_MS = window.BENCHMARK_DELAY || 300;
   // Number of times to press down/up per cycle. Can be overridden via window.BENCHMARK_PRESSES
