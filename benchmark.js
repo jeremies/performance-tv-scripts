@@ -110,6 +110,20 @@
 
       var key = cycle % 2 === 0 ? "ArrowDown" : "ArrowUp";
 
+      var stepText =
+        "Cycle " +
+        (cycle + 1) +
+        "/" +
+        TOTAL_CYCLES +
+        " - " +
+        (cycle % 2 === 0 ? "Down" : "Up") +
+        " " +
+        (stepIndex + 1) +
+        "/" +
+        PRESSES_PER_CYCLE;
+
+      updateStatus(stepText);
+
       simulateKeyDown(key);
 
       setTimeout(function () {
