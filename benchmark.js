@@ -53,6 +53,7 @@
     overlay.style.fontSize = "20px";
     overlay.style.zIndex = "999999";
     overlay.style.pointerEvents = "none";
+    overlay.style.whiteSpace = "pre-wrap";
     document.body.appendChild(overlay);
 
     function updateStatus(text) {
@@ -62,12 +63,19 @@
 
     // Custom FPS Tracking
     var fpsValues = [];
+    var msValues = [];
     var tracking = false;
     var frames = 0;
     var startTime = performance.now();
+    var lastFrameTime = performance.now();
 
     function animate() {
       var now = performance.now();
+      if (tracking) {
+        msValues.push(now - lastFrameTime);
+      }
+      lastFrameTime = now;
+
       frames++;
       if (now >= startTime + 1000) {
         // TODO ignore really low fps which occur during page load or transitions. frames > 5?
@@ -130,24 +138,29 @@
     function finishBenchmark() {
       tracking = false;
       if (fpsValues.length > 0) {
-        var sum = 0;
+        var sumFps = 0;
         for (var i = 0; i < fpsValues.length; i++) {
-          sum += fpsValues[i];
+          sumFps += fpsValues[i];
         }
-        var avg = sum / fpsValues.length;
-        var min = Math.min.apply(null, fpsValues);
-        var max = Math.max.apply(null, fpsValues);
+        var avgFps = sumFps / fpsValues.length;
+        var minFps = Math.min.apply(null, fpsValues);
+        var maxFps = Math.max.apply(null, fpsValues);
+
+        var sumMs = 0;
+        for (var j = 0; j < msValues.length; j++) {
+          sumMs += msValues[j];
+        }
+        var avgMs = msValues.length > 0 ? (sumMs / msValues.length) : 0;
+        var minMs = msValues.length > 0 ? Math.min.apply(null, msValues) : 0;
+        var maxMs = msValues.length > 0 ? Math.max.apply(null, msValues) : 0;
 
         updateStatus(
-          "Done! Avg: " +
-            avg.toFixed(1) +
-            " FPS | Min: " +
-            min.toFixed(1) +
-            " | Max: " +
-            max.toFixed(1)
+          "Done!\n" +
+            "FPS - Avg: " + avgFps.toFixed(1) + " | Min: " + minFps.toFixed(1) + " | Max: " + maxFps.toFixed(1) + "\n" +
+            "MS  - Avg: " + avgMs.toFixed(1) + " | Min: " + minMs.toFixed(1) + " | Max: " + maxMs.toFixed(1)
         );
       } else {
-        updateStatus("Done! No FPS samples collected.");
+        updateStatus("Done! No samples collected.");
       }
     }
   }
