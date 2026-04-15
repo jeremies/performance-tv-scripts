@@ -1,12 +1,20 @@
 (function () {
-  // Configuration
-  var TOTAL_SWEEPS = window.BENCHMARK_SWEEPS || 4;
-  // Delay between key presses. Can be overridden via window.BENCHMARK_DELAY
-  var NAV_DELAY_MS = window.BENCHMARK_DELAY || 300;
-  // Number of times to press down/up per sweep. Can be overridden via window.BENCHMARK_PRESSES
-  var PRESSES_PER_SWEEP = window.BENCHMARK_PRESSES || 40;
+  window.runBenchmark = function () {
+    // Configuration
+    var TOTAL_SWEEPS = window.BENCHMARK_SWEEPS || 4;
+    // Delay between key presses. Can be overridden via window.BENCHMARK_DELAY
+    var NAV_DELAY_MS = window.BENCHMARK_DELAY || 300;
+    // Number of times to press down/up per sweep. Can be overridden via window.BENCHMARK_PRESSES
+    var PRESSES_PER_SWEEP = window.BENCHMARK_PRESSES || 40;
 
-  simulateKeyDown("ArrowRight");
+    if (window._benchmarkRafId) {
+      cancelAnimationFrame(window._benchmarkRafId);
+    }
+    if (window._benchmarkTimeoutId) {
+      clearTimeout(window._benchmarkTimeoutId);
+    }
+
+    simulateKeyDown("ArrowRight");
 
   function simulateKeyDown(key) {
     var keyCode = 0;
@@ -39,7 +47,11 @@
 
   function run() {
     // Create a status overlay
+    var existingOverlay = document.getElementById("benchmark-overlay");
+    if (existingOverlay) existingOverlay.remove();
+
     var overlay = document.createElement("div");
+    overlay.id = "benchmark-overlay";
     overlay.style.position = "absolute";
     overlay.style.top = "20px";
     overlay.style.right = "120px";
@@ -88,13 +100,13 @@
         startTime = now;
       }
 
-      requestAnimationFrame(animate);
+      window._benchmarkRafId = requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
+    window._benchmarkRafId = requestAnimationFrame(animate);
 
     updateStatus("Starting benchmark in 2 seconds...");
 
-    setTimeout(function () {
+    window._benchmarkTimeoutId = setTimeout(function () {
       tracking = true;
       runLoop(0, 0);
     }, 2000);
@@ -129,13 +141,14 @@
 
       simulateKeyDown(key);
 
-      setTimeout(function () {
+      window._benchmarkTimeoutId = setTimeout(function () {
         runLoop(sweep, stepIndex + 1);
       }, NAV_DELAY_MS);
     }
 
     function finishBenchmark() {
       tracking = false;
+      cancelAnimationFrame(window._benchmarkRafId);
       if (fpsValues.length > 0) {
         var sumFps = 0;
         var integralFps = 0;
@@ -183,5 +196,9 @@
     }
   }
 
-  run();
+    run();
+  };
+
+  // Run automatically when loaded
+  window.runBenchmark();
 })();
