@@ -1,4 +1,10 @@
 (function () {
+  var IS_WEBOS = Boolean(navigator.userAgent.match(/Web0S/i));
+
+  if (IS_WEBOS) {
+    window.webOS.deviceInfo(function(data) { window.webosInfo = data } );
+  }
+
   window.runBenchmark = function () {
     // Configuration
     var TOTAL_SWEEPS = window.BENCHMARK_SWEEPS || 4;
@@ -152,12 +158,23 @@
       tracking = false;
       cancelAnimationFrame(window._benchmarkRafId);
 
+      function wrapLong(str, maxLen) {
+        maxLen = maxLen || 80;
+        var result = "";
+        while (str.length > maxLen) {
+          result += str.slice(0, maxLen) + "\n  ";
+          str = str.slice(maxLen);
+        }
+        return result + str;
+      }
+
       var configText = "\nConfig: Sweeps=" + TOTAL_SWEEPS + 
                        " | Delay=" + NAV_DELAY_MS + "ms" +
                        " | Presses=" + PRESSES_PER_SWEEP + 
                        " | Canvas=" + DISPLAY_CANVAS +
                        "\nURL: " + window.location.href +
-                       "\nUA: " + navigator.userAgent;
+                       "\nUA: " + wrapLong(navigator.userAgent) +
+                       "\nWebOSInfo: " + wrapLong(JSON.stringify(window.webosInfo) || "");
 
       if (fpsValues.length > 0) {
         var sumFps = 0;
