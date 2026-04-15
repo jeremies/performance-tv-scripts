@@ -4,7 +4,8 @@
 
   // Configuration
   var TOTAL_CYCLES = 2;
-  var NAV_DELAY_MS = 300;
+  // Delay between key presses. Can be overridden via window.BENCHMARK_DELAY
+  var NAV_DELAY_MS = window.BENCHMARK_DELAY || 300;
   // Number of times to press down/up per cycle. Can be overridden via window.BENCHMARK_PRESSES
   var PRESSES_PER_CYCLE = window.BENCHMARK_PRESSES || 40;
 
@@ -115,19 +116,7 @@
       }
 
       var key = direction === "down" ? "ArrowDown" : "ArrowUp";
-      var stepText =
-        "Cycle " +
-        (cycle + 1) +
-        "/" +
-        TOTAL_CYCLES +
-        " - " +
-        (direction === "down" ? "Down" : "Up") +
-        " " +
-        (stepIndex + 1) +
-        "/" +
-        PRESSES_PER_CYCLE;
 
-      updateStatus(stepText);
       simulateKeyDown(key);
 
       setTimeout(function () {
@@ -150,14 +139,25 @@
         for (var j = 0; j < msValues.length; j++) {
           sumMs += msValues[j];
         }
-        var avgMs = msValues.length > 0 ? (sumMs / msValues.length) : 0;
+        var avgMs = msValues.length > 0 ? sumMs / msValues.length : 0;
         var minMs = msValues.length > 0 ? Math.min.apply(null, msValues) : 0;
         var maxMs = msValues.length > 0 ? Math.max.apply(null, msValues) : 0;
 
         updateStatus(
           "Done!\n" +
-            "FPS - Avg: " + avgFps.toFixed(1) + " | Min: " + minFps.toFixed(1) + " | Max: " + maxFps.toFixed(1) + "\n" +
-            "MS  - Avg: " + avgMs.toFixed(1) + " | Min: " + minMs.toFixed(1) + " | Max: " + maxMs.toFixed(1)
+            "FPS - Avg: " +
+            avgFps.toFixed(1) +
+            " | Min: " +
+            minFps.toFixed(1) +
+            " | Max: " +
+            maxFps.toFixed(1) +
+            "\n" +
+            "MS  - Avg: " +
+            avgMs.toFixed(1) +
+            " | Min: " +
+            minMs.toFixed(1) +
+            " | Max: " +
+            maxMs.toFixed(1)
         );
       } else {
         updateStatus("Done! No samples collected.");
