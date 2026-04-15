@@ -93,31 +93,27 @@
 
     setTimeout(function () {
       tracking = true;
-      runLoop(0, 0, "down");
+      runLoop(0, 0);
     }, 2000);
 
     // Loop logic to replace async/await
-    function runLoop(cycle, stepIndex, direction) {
+    function runLoop(cycle, stepIndex) {
       if (cycle >= TOTAL_CYCLES) {
         finishBenchmark();
         return;
       }
 
       if (stepIndex >= PRESSES_PER_CYCLE) {
-        if (direction === "down") {
-          runLoop(cycle, 0, "up");
-        } else {
-          runLoop(cycle + 1, 0, "down");
-        }
+        runLoop(cycle + 1, 0);
         return;
       }
 
-      var key = direction === "down" ? "ArrowDown" : "ArrowUp";
+      var key = cycle % 2 === 0 ? "ArrowDown" : "ArrowUp";
 
       simulateKeyDown(key);
 
       setTimeout(function () {
-        runLoop(cycle, stepIndex + 1, direction);
+        runLoop(cycle, stepIndex + 1);
       }, NAV_DELAY_MS);
     }
 
