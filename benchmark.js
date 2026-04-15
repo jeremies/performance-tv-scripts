@@ -151,6 +151,12 @@
     function finishBenchmark() {
       tracking = false;
       cancelAnimationFrame(window._benchmarkRafId);
+
+      var configText = "\nConfig: Sweeps=" + TOTAL_SWEEPS + 
+                       " | Delay=" + NAV_DELAY_MS + "ms" +
+                       " | Presses=" + PRESSES_PER_SWEEP + 
+                       " | Canvas=" + DISPLAY_CANVAS;
+
       if (fpsValues.length > 0) {
         var sumFps = 0;
         var integralFps = 0;
@@ -190,7 +196,8 @@
             " | Max: " +
             maxMs.toFixed(1) +
             " | Int: " +
-            integralMs.toFixed(1)
+            integralMs.toFixed(1) +
+            configText
         );
 
         if (DISPLAY_CANVAS) {
@@ -241,7 +248,7 @@
           ctx.fillText("MS", 10, 36);
         }
       } else {
-        updateStatus("Done! No samples collected.");
+        updateStatus("Done! No samples collected." + configText);
       }
     }
   }
