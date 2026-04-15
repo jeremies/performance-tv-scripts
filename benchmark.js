@@ -1,10 +1,10 @@
 (function () {
   // Configuration
-  var TOTAL_CYCLES = window.BENCHMARK_CYCLES || 4;
+  var TOTAL_SWEEPS = window.BENCHMARK_SWEEPS || 4;
   // Delay between key presses. Can be overridden via window.BENCHMARK_DELAY
   var NAV_DELAY_MS = window.BENCHMARK_DELAY || 300;
-  // Number of times to press down/up per cycle. Can be overridden via window.BENCHMARK_PRESSES
-  var PRESSES_PER_CYCLE = window.BENCHMARK_PRESSES || 40;
+  // Number of times to press down/up per sweep. Can be overridden via window.BENCHMARK_PRESSES
+  var PRESSES_PER_SWEEP = window.BENCHMARK_PRESSES || 40;
 
   simulateKeyDown("ArrowRight");
 
@@ -97,37 +97,37 @@
     }, 2000);
 
     // Loop logic to replace async/await
-    function runLoop(cycle, stepIndex) {
-      if (cycle >= TOTAL_CYCLES) {
+    function runLoop(sweep, stepIndex) {
+      if (sweep >= TOTAL_SWEEPS) {
         finishBenchmark();
         return;
       }
 
-      if (stepIndex >= PRESSES_PER_CYCLE) {
-        runLoop(cycle + 1, 0);
+      if (stepIndex >= PRESSES_PER_SWEEP) {
+        runLoop(sweep + 1, 0);
         return;
       }
 
-      var key = cycle % 2 === 0 ? "ArrowDown" : "ArrowUp";
+      var key = sweep % 2 === 0 ? "ArrowDown" : "ArrowUp";
 
       var stepText =
-        "Cycle " +
-        (cycle + 1) +
+        "Sweep " +
+        (sweep + 1) +
         "/" +
-        TOTAL_CYCLES +
+        TOTAL_SWEEPS +
         " - " +
-        (cycle % 2 === 0 ? "Down" : "Up") +
+        (sweep % 2 === 0 ? "Down" : "Up") +
         " " +
         (stepIndex + 1) +
         "/" +
-        PRESSES_PER_CYCLE;
+        PRESSES_PER_SWEEP;
 
       updateStatus(stepText);
 
       simulateKeyDown(key);
 
       setTimeout(function () {
-        runLoop(cycle, stepIndex + 1);
+        runLoop(sweep, stepIndex + 1);
       }, NAV_DELAY_MS);
     }
 
