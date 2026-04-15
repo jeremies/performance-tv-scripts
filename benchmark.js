@@ -190,6 +190,52 @@
             " | Int: " +
             integralMs.toFixed(1)
         );
+
+        var canvas = document.createElement("canvas");
+        canvas.width = 400;
+        canvas.height = 150;
+        canvas.style.marginTop = "15px";
+        canvas.style.display = "block";
+        overlay.appendChild(canvas);
+
+        var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#111";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw MS Values (Red)
+        if (msValues.length > 0) {
+          ctx.beginPath();
+          ctx.strokeStyle = "rgba(255, 70, 70, 0.8)";
+          ctx.lineWidth = 1;
+          for (var j = 0; j < msValues.length; j++) {
+            var xMs = (j / (msValues.length - 1 || 1)) * canvas.width;
+            var yMs = canvas.height - (msValues[j] / (Math.max(60, maxMs) || 1)) * canvas.height;
+            if (j === 0) ctx.moveTo(xMs, yMs);
+            else ctx.lineTo(xMs, yMs);
+          }
+          ctx.stroke();
+        }
+
+        // Draw FPS Values (Green)
+        if (fpsValues.length > 0) {
+          ctx.beginPath();
+          ctx.strokeStyle = "rgba(70, 255, 70, 0.8)";
+          ctx.lineWidth = 2;
+          for (var i = 0; i < fpsValues.length; i++) {
+            var xFps = (i / (fpsValues.length - 1 || 1)) * canvas.width;
+            var yFps = canvas.height - (fpsValues[i] / (Math.max(60, maxFps) || 1)) * canvas.height;
+            if (i === 0) ctx.moveTo(xFps, yFps);
+            else ctx.lineTo(xFps, yFps);
+          }
+          ctx.stroke();
+        }
+
+        // Legend
+        ctx.font = "12px monospace";
+        ctx.fillStyle = "rgba(70, 255, 70, 0.8)";
+        ctx.fillText("FPS", 10, 20);
+        ctx.fillStyle = "rgba(255, 70, 70, 0.8)";
+        ctx.fillText("MS", 10, 36);
       } else {
         updateStatus("Done! No samples collected.");
       }
