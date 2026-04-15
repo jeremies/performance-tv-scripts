@@ -155,7 +155,9 @@
       var configText = "\nConfig: Sweeps=" + TOTAL_SWEEPS + 
                        " | Delay=" + NAV_DELAY_MS + "ms" +
                        " | Presses=" + PRESSES_PER_SWEEP + 
-                       " | Canvas=" + DISPLAY_CANVAS;
+                       " | Canvas=" + DISPLAY_CANVAS +
+                       "\nURL: " + window.location.href +
+                       "\nUA: " + navigator.userAgent;
 
       if (fpsValues.length > 0) {
         var sumFps = 0;
